@@ -4,6 +4,7 @@ import { getChains } from "../core/chains";
 import { switchChain } from "../core/switchChain";
 import { useUGF } from "../hooks/useUGF";
 import { UGFModal } from "./UGFModal";
+import { DEFAULT_UGF_MODE, type UGFMode } from "../core/mode";
 
 type UGFParams = {
   signer: Signer;
@@ -26,15 +27,21 @@ export function useUGFModal() {
   return ctx;
 }
 
-export function UGFProvider({ children }: { children: React.ReactNode }) {
-  const { run, step, loading, error } = useUGF();
+export function UGFProvider({
+  children,
+  mode = DEFAULT_UGF_MODE,
+}: {
+  children: React.ReactNode;
+  mode?: UGFMode;
+}) {
+  const { run, step, loading, error } = useUGF(mode);
 
   const [open, setOpen] = useState(false);
   const [params, setParams] = useState<UGFParams | null>(null);
   const [result, setResult] = useState<UGFResult | null>(null);
 
   async function openUGF(p: UGFParams) {
-    const chains = await getChains();
+    const chains = await getChains(mode);
     const isSupported = chains.some(
       (c: any) => c.chain_type === "evm" && c.chain_id === p.destChainId,
     );
@@ -89,6 +96,7 @@ export function UGFProvider({ children }: { children: React.ReactNode }) {
         signer={params?.signer ?? null}
         tx={params?.tx ?? null}
         destChainId={params?.destChainId ?? ""}
+        mode={mode}
       />
     </UGFContext.Provider>
   );

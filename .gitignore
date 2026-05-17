@@ -1,2 +1,61 @@
-/node_modules
-/dist
+# deps
+node_modules/
+.pnp/
+.pnp.js
+
+# build
+dist/
+build/
+out/
+lib/
+*.tsbuildinfo
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# env
+.env
+.env.*
+!.env.example
+
+# os
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# editor
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+
+# cache
+.cache/
+.parcel-cache/
+.turbo/
+.next/
+.nuxt/
+.eslintcache
+.stylelintcache
+
+# coverage / test
+coverage/
+*.lcov
+.nyc_output/
+
+# misc
+*.tgz
+.npm/
+.yarn/
+.pnpm-store/

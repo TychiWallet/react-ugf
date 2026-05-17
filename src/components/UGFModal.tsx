@@ -5,6 +5,7 @@ import { getUGFQuote } from "../core/quote";
 import { getTokenBalance } from "../core/balance";
 import { getTokenIcon } from "../core/tokenIcons";
 import { EVM_CHAIN_NAMES } from "../core/evm_chain_names";
+import { DEFAULT_UGF_MODE, type UGFMode } from "../core/mode";
 
 interface Props {
   open: boolean;
@@ -17,6 +18,7 @@ interface Props {
   signer: Signer | null;
   tx: TransactionRequest | null;
   destChainId: string;
+  mode?: UGFMode;
 }
 
 interface Selection {
@@ -64,6 +66,7 @@ export function UGFModal({
   signer,
   tx,
   destChainId,
+  mode = DEFAULT_UGF_MODE,
 }: Props) {
   const [options, setOptions] = useState<TokenOption[]>([]);
   const [selected, setSelected] = useState<Selection | null>(null);
@@ -88,7 +91,7 @@ export function UGFModal({
     setBalance("");
     setOptionsLoading(true);
 
-    getAllPaymentOptions()
+    getAllPaymentOptions(mode)
       .then((opts) => {
         setOptions(opts);
         if (opts.length > 0 && opts[0].chains.length > 0) {
@@ -100,7 +103,7 @@ export function UGFModal({
         }
       })
       .finally(() => setOptionsLoading(false));
-  }, [open]);
+  }, [open, mode]);
 
   async function handleSelect(
     token: string,
@@ -124,6 +127,7 @@ export function UGFModal({
         paymentToken: token,
         paymentChainId: chainId,
         destChainId,
+        mode,
       });
       setQuote(q?.payment_amount ?? "");
     } catch (e) {
@@ -136,7 +140,7 @@ export function UGFModal({
     const fetchBalance = async () => {
       if (!signer) return;
       try {
-        const bal = await getTokenBalance(signer, tokenAddress, chainId);
+        const bal = await getTokenBalance(signer, tokenAddress, chainId, mode);
         setDecimals(bal.decimals);
         setBalance(bal.formatted);
       } catch {
